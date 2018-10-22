@@ -1,7 +1,8 @@
 'use strict';
 
 const request = require('request');
-let key = require('./key')["key"];
+const key = require('./key')["key"];
+const timeInterval = 1;
 const options = {
 	url: 'http://api.worldweatheronline.com/premium/v1/weather.ashx',
 	qs: {
@@ -13,8 +14,21 @@ const options = {
 
 class Index {
 	constructor() {
+		// We should set up the axidraw here, eventually
+		
+		// Set up an interval to check the weather
+		this.sendRequest = this.sendRequest.bind(this);
+		this.interval = null;
+		this.addListeners();
+	}
+	addListeners() {
+		this.interval = setInterval(this.sendRequest, timeInterval * 1000);
+	}
+	sendRequest() {
 		request(options, (error, response, body) => {
-			console.log(JSON.parse(body).data["current_condition"]);
+			let data = JSON.parse(body);
+			let currentCondition = data.data["current_condition"];
+			console.log(currentCondition);
 		});
 	}
 }

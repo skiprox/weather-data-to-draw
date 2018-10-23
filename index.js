@@ -35,6 +35,7 @@ class App {
 		options.qs["q"] = coordinate;
 		coordinatesIncrementer = (coordinatesIncrementer + 1) % coordinates.length;
 		request(options, (error, response, body) => {
+			if (error) throw new Error(error);
 			let data = JSON.parse(body);
 			let currentCondition = data.data["current_condition"];
 			console.log(currentCondition);

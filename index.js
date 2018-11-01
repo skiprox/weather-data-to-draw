@@ -1,9 +1,17 @@
 'use strict';
 
+/**
+ * Requires
+ */
 const request = require('request');
 const key = require('./key')["key"];
-const timeInterval = 20;
-const options = {
+
+/**
+ * Variables
+ */
+const timeInterval = 172.8;
+const timeIntervalTest = 20;
+const weatherRequestOptions = {
 	url: 'http://api.worldweatheronline.com/premium/v1/weather.ashx',
 	qs: {
 		"q": "9.7499,112.999",
@@ -21,34 +29,55 @@ const coordinates = [
 ];
 let coordinatesIncrementer = 0;
 
+/**
+ * APP
+ * Our application
+ */
 class App {
+	/**
+	 * constructor [set everything up]
+	 */
 	constructor() {
 		// Set up an interval to check the weather
 		this.sendRequest = this.sendRequest.bind(this);
 		this.interval = null;
 		this.addListeners();
 		this.draw('0,0', 1);
-		//this.sendRequest();
 	}
+	/**
+	 * addListeners [set interval listener to send requests to get weather data]
+	 */
 	addListeners() {
 		this.interval = setInterval(this.sendRequest, timeInterval * 1000);
 	}
+	/**
+	 * sendRequest [send a request to worldweatheronline]
+	 */
 	sendRequest() {
 		let coordinate = coordinates[coordinatesIncrementer];
-		options.qs["q"] = coordinate;
+		weatherRequestOptions.qs["q"] = coordinate;
 		coordinatesIncrementer = (coordinatesIncrementer + 1) % coordinates.length;
-		request(options, (error, response, body) => {
+		request(weatherRequestOptions, (error, response, body) => {
 			if (error) {
 				throw error;
 			} else {
 				let data = JSON.parse(body);
 				let currentCondition = data.data["current_condition"];
 				console.log(currentCondition[0].cloudcover);
-				let cloudCover = parseInt(currentCondition[0].cloudcover)/100;
+				let cloudCover = parseFloat(currentCondition[0].cloudcover)/100;
 				this.draw(coordinate, cloudCover);
 			}
 		});
 	}
+	/**
+	 * draw [draw on the axidraw]
+	 * @param  {String} coordinate [lat&lng coordinates in the form of e.g. '13.42,9.58']
+	 * @param  {Float} cloudCover [cloud cover, from 0 to 1 (drawn as 1 - cloudCover)]
+	 *
+	 * What we do here is send a request to localhost to reset the state of the pen
+	 * to 0 (UP), then send a request to move it to the appropriate coordinates,
+	 * then send a request to set the state of the pen to whatever the cloud coverage is
+	 */
 	draw(coordinate, cloudCover) {
 		// TODO
 		// put this into promises

@@ -78,7 +78,7 @@ class App {
 				}, (error, response, body) => {
 					if (error) throw error;
 					console.log(response.body);
-				})
+				});
 			});
 		});
 	}

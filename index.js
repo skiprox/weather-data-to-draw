@@ -5,10 +5,22 @@
  */
 const request = require('request');
 const key = require('./key')["key"];
+const coordinates = require('./coordinates');
+const utils = require('./utils');
 
 /**
  * Variables
  */
+let xCoordinates = coordinates.map(function(coord) {
+	return coord.x;
+});
+let yCoordinates = coordinates.map(function(coord) {
+	return coord.y;
+});
+let xMin = Math.min(...xCoordinates);
+let xMax = Math.max(...xCoordinates);
+let yMin = Math.min(...yCoordinates);
+let yMax = Math.max(...yCoordinates);
 const timeInterval = 172.8;
 const timeIntervalTest = 20;
 const weatherRequestOptions = {
@@ -20,13 +32,9 @@ const weatherRequestOptions = {
 	}
 };
 const penURL = 'http://localhost:4242/v1/pen';
-const header = {
+const penHeader = {
 	'Content-Type': 'application/json; charset=UTF-8'
 };
-const coordinates = [
-	"9.7499,112.999",
-	"16.027,112.546"
-];
 let coordinatesIncrementer = 0;
 
 /**
@@ -41,21 +49,27 @@ class App {
 		// Set up an interval to check the weather
 		this.sendRequest = this.sendRequest.bind(this);
 		this.interval = null;
+		this.setup();
 		this.addListeners();
+	}
+	/**
+	 * setup [do initial setup work]
+	 */
+	setup() {
 		this.draw('0,0', 1);
 	}
 	/**
 	 * addListeners [set interval listener to send requests to get weather data]
 	 */
 	addListeners() {
-		this.interval = setInterval(this.sendRequest, timeInterval * 1000);
+		this.interval = setInterval(this.sendRequest, timeIntervalTest * 1000);
 	}
 	/**
 	 * sendRequest [send a request to worldweatheronline]
 	 */
 	sendRequest() {
 		let coordinate = coordinates[coordinatesIncrementer];
-		weatherRequestOptions.qs["q"] = coordinate;
+		weatherRequestOptions.qs["q"] = `${coordinate.x},${coordinate.y}`;
 		coordinatesIncrementer = (coordinatesIncrementer + 1) % coordinates.length;
 		request(weatherRequestOptions, (error, response, body) => {
 			if (error) {
@@ -63,7 +77,6 @@ class App {
 			} else {
 				let data = JSON.parse(body);
 				let currentCondition = data.data["current_condition"];
-				console.log(currentCondition[0].cloudcover);
 				let cloudCover = parseFloat(currentCondition[0].cloudcover)/100;
 				this.draw(coordinate, cloudCover);
 			}
@@ -81,26 +94,27 @@ class App {
 	draw(coordinate, cloudCover) {
 		// TODO
 		// put this into promises
-		let coordinateArr = coordinate.split(',');
-		let xCoord = parseFloat(coordinateArr[0]);
-		let yCoord = parseFloat(coordinateArr[1]);
+		let xCoord = coordinate.x;
+		let yCoord = coordinate.y;
+		let percentX = utils.mapClamp(xCoord, xMin, xMax, 0, 100);
+		let percentY = utils.mapClamp(yCoord, yMin, yMax, 0, 100);
 		request.put(penURL, {
-			headers: header,
+			headers: penHeader,
 			body: JSON.stringify({
 				"state": 0
 			})
 		}, (error, response, body) => {
 			if (error) throw error;
 			request.put(penURL, {
-				headers: header,
+				headers: penHeader,
 				body: JSON.stringify({
-					"x": xCoord,
-					"y": yCoord
+					"x": percentX,
+					"y": percentY
 				})
 			}, (error, response, body) => {
 				if (error) throw error;
 				request.put(penURL, {
-					headers: header,
+					headers: penHeader,
 					body: JSON.stringify({
 						"state": 1 - cloudCover
 					})

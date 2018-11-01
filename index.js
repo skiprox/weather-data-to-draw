@@ -11,12 +11,8 @@ const utils = require('./utils');
 /**
  * Variables
  */
-let xCoordinates = coordinates.map(function(coord) {
-	return coord.x;
-});
-let yCoordinates = coordinates.map(function(coord) {
-	return coord.y;
-});
+let xCoordinates = coordinates.map(coord => coord.x);
+let yCoordinates = coordinates.map(coord => coord.y);
 let xMin = Math.min(...xCoordinates);
 let xMax = Math.max(...xCoordinates);
 let yMin = Math.min(...yCoordinates);

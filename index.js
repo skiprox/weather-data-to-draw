@@ -18,7 +18,7 @@ let xMax = Math.max(...xCoordinates);
 let yMin = Math.min(...yCoordinates);
 let yMax = Math.max(...yCoordinates);
 const timeInterval = 172.8;
-const timeIntervalTest = 20;
+const timeIntervalTest = 5;
 const weatherRequestOptions = {
 	url: 'http://api.worldweatheronline.com/premium/v1/weather.ashx',
 	qs: {
@@ -92,8 +92,8 @@ class App {
 		// put this into promises
 		let xCoord = coordinate.x;
 		let yCoord = coordinate.y;
-		let percentX = utils.mapClamp(xCoord, xMin, xMax, 0, 100);
-		let percentY = utils.mapClamp(yCoord, yMin, yMax, 0, 100);
+		let percentX = utils.mapClamp(xCoord, xMin, xMax, 10, 90);
+		let percentY = utils.mapClamp(yCoord, yMin, yMax, 10, 90);
 		request.put(penURL, {
 			headers: penHeader,
 			body: JSON.stringify({
@@ -112,7 +112,7 @@ class App {
 				request.put(penURL, {
 					headers: penHeader,
 					body: JSON.stringify({
-						"state": 1 - cloudCover
+						"state": 1 - cloudCover/2
 					})
 				}, (error, response, body) => {
 					if (error) throw error;
@@ -120,6 +120,66 @@ class App {
 				});
 			});
 		});
+		// request.put(penURL, {
+		// 	headers: penHeader,
+		// 	body: JSON.stringify({
+		// 		"state": 0.9
+		// 	})
+		// }, (error, response, body) => {
+		// 	if (error) throw error;
+		// 	console.log(response.body);
+		// 	request.put(penURL, {
+		// 		headers: penHeader,
+		// 		body: JSON.stringify({
+		// 			"x": 10,
+		// 			"y": 10
+		// 		})
+		// 	}, (error, response, body) => {
+		// 		if (error) throw error;
+		// 		console.log(response.body);
+		// 		request.put(penURL, {
+		// 			headers: penHeader,
+		// 			body: JSON.stringify({
+		// 				"x": 90,
+		// 				"y": 10
+		// 			})
+		// 		}, (error, response, body) => {
+		// 			if (error) throw error;
+		// 			console.log(response.body);
+		// 			request.put(penURL, {
+		// 				headers: penHeader,
+		// 				body: JSON.stringify({
+		// 					"x": 90,
+		// 					"y": 90
+		// 				})
+		// 			}, (error, response, body) => {
+		// 				if (error) throw error;
+		// 				console.log(response.body);
+		// 				request.put(penURL, {
+		// 					headers: penHeader,
+		// 					body: JSON.stringify({
+		// 						"x": 10,
+		// 						"y": 90
+		// 					})
+		// 				}, (error, response, body) => {
+		// 					if (error) throw error;
+		// 					console.log(response.body);
+		// 					request.put(penURL, {
+		// 						headers: penHeader,
+		// 						body: JSON.stringify({
+		// 							"x": 10,
+		// 							"y": 10
+		// 						})
+		// 					}, (error, response, body) => {
+		// 						if (error) throw error;
+		// 						console.log(response.body);
+		// 						this.draw('0,0', 1);
+		// 					})
+		// 				})
+		// 			})
+		// 		})
+		// 	})
+		// })
 	}
 }
 

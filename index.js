@@ -58,7 +58,7 @@ class App {
 	 * addListeners [set interval listener to send requests to get weather data]
 	 */
 	addListeners() {
-		this.interval = setInterval(this.sendRequest, timeIntervalTest * 1000);
+		//this.interval = setInterval(this.sendRequest, timeInterval * 1000);
 	}
 	/**
 	 * sendRequest [send a request to worldweatheronline]
@@ -94,6 +94,32 @@ class App {
 		let yCoord = coordinate.y;
 		let percentX = utils.mapClamp(xCoord, xMin, xMax, 10, 90);
 		let percentY = utils.mapClamp(yCoord, yMin, yMax, 10, 90);
+		// request.put(penURL, {
+		// 	headers: penHeader,
+		// 	body: JSON.stringify({
+		// 		"state": 0
+		// 	})
+		// }, (error, response, body) => {
+		// 	if (error) throw error;
+		// 	request.put(penURL, {
+		// 		headers: penHeader,
+		// 		body: JSON.stringify({
+		// 			"x": percentX,
+		// 			"y": percentY
+		// 		})
+		// 	}, (error, response, body) => {
+		// 		if (error) throw error;
+		// 		request.put(penURL, {
+		// 			headers: penHeader,
+		// 			body: JSON.stringify({
+		// 				"state": 1 - cloudCover/2
+		// 			})
+		// 		}, (error, response, body) => {
+		// 			if (error) throw error;
+		// 			console.log(response.body);
+		// 		});
+		// 	});
+		// });
 		request.put(penURL, {
 			headers: penHeader,
 			body: JSON.stringify({
@@ -101,85 +127,59 @@ class App {
 			})
 		}, (error, response, body) => {
 			if (error) throw error;
+			console.log(response.body);
 			request.put(penURL, {
 				headers: penHeader,
 				body: JSON.stringify({
-					"x": percentX,
-					"y": percentY
+					"x": 10,
+					"y": 10
 				})
 			}, (error, response, body) => {
 				if (error) throw error;
+				console.log(response.body);
 				request.put(penURL, {
 					headers: penHeader,
 					body: JSON.stringify({
-						"state": 1 - cloudCover/2
+						"x": 90,
+						"y": 10
 					})
 				}, (error, response, body) => {
 					if (error) throw error;
 					console.log(response.body);
-				});
-			});
-		});
-		// request.put(penURL, {
-		// 	headers: penHeader,
-		// 	body: JSON.stringify({
-		// 		"state": 0.9
-		// 	})
-		// }, (error, response, body) => {
-		// 	if (error) throw error;
-		// 	console.log(response.body);
-		// 	request.put(penURL, {
-		// 		headers: penHeader,
-		// 		body: JSON.stringify({
-		// 			"x": 10,
-		// 			"y": 10
-		// 		})
-		// 	}, (error, response, body) => {
-		// 		if (error) throw error;
-		// 		console.log(response.body);
-		// 		request.put(penURL, {
-		// 			headers: penHeader,
-		// 			body: JSON.stringify({
-		// 				"x": 90,
-		// 				"y": 10
-		// 			})
-		// 		}, (error, response, body) => {
-		// 			if (error) throw error;
-		// 			console.log(response.body);
-		// 			request.put(penURL, {
-		// 				headers: penHeader,
-		// 				body: JSON.stringify({
-		// 					"x": 90,
-		// 					"y": 90
-		// 				})
-		// 			}, (error, response, body) => {
-		// 				if (error) throw error;
-		// 				console.log(response.body);
-		// 				request.put(penURL, {
-		// 					headers: penHeader,
-		// 					body: JSON.stringify({
-		// 						"x": 10,
-		// 						"y": 90
-		// 					})
-		// 				}, (error, response, body) => {
-		// 					if (error) throw error;
-		// 					console.log(response.body);
-		// 					request.put(penURL, {
-		// 						headers: penHeader,
-		// 						body: JSON.stringify({
-		// 							"x": 10,
-		// 							"y": 10
-		// 						})
-		// 					}, (error, response, body) => {
-		// 						if (error) throw error;
-		// 						console.log(response.body);
-		// 						this.draw('0,0', 1);
-		// 					})
-		// 				})
-		// 			})
-		// 		})
-		// 	})
-		// })
+					request.put(penURL, {
+						headers: penHeader,
+						body: JSON.stringify({
+							"x": 90,
+							"y": 90
+						})
+					}, (error, response, body) => {
+						if (error) throw error;
+						console.log(response.body);
+						request.put(penURL, {
+							headers: penHeader,
+							body: JSON.stringify({
+								"x": 10,
+								"y": 90
+							})
+						}, (error, response, body) => {
+							if (error) throw error;
+							console.log(response.body);
+							request.put(penURL, {
+								headers: penHeader,
+								body: JSON.stringify({
+									"x": 0,
+									"y": 0
+								})
+							}, (error, response, body) => {
+								if (error) throw error;
+								console.log(response.body);
+								// this.draw('0,0', 1);
+							})
+						})
+					})
+				})
+			})
+		})
 	}
 }
 

@@ -45,7 +45,8 @@ class App {
 		// Set up an interval to check the weather
 		this.sendRequest = this.sendRequest.bind(this);
 		this.interval = null;
-		this.setup();
+		// this.setup();
+		this.sendRequest();
 		this.addListeners();
 	}
 	/**
@@ -120,66 +121,6 @@ class App {
 				});
 			});
 		});
-		// request.put(penURL, {
-		// 	headers: penHeader,
-		// 	body: JSON.stringify({
-		// 		"state": 0.9
-		// 	})
-		// }, (error, response, body) => {
-		// 	if (error) throw error;
-		// 	console.log(response.body);
-		// 	request.put(penURL, {
-		// 		headers: penHeader,
-		// 		body: JSON.stringify({
-		// 			"x": 10,
-		// 			"y": 10
-		// 		})
-		// 	}, (error, response, body) => {
-		// 		if (error) throw error;
-		// 		console.log(response.body);
-		// 		request.put(penURL, {
-		// 			headers: penHeader,
-		// 			body: JSON.stringify({
-		// 				"x": 90,
-		// 				"y": 10
-		// 			})
-		// 		}, (error, response, body) => {
-		// 			if (error) throw error;
-		// 			console.log(response.body);
-		// 			request.put(penURL, {
-		// 				headers: penHeader,
-		// 				body: JSON.stringify({
-		// 					"x": 90,
-		// 					"y": 90
-		// 				})
-		// 			}, (error, response, body) => {
-		// 				if (error) throw error;
-		// 				console.log(response.body);
-		// 				request.put(penURL, {
-		// 					headers: penHeader,
-		// 					body: JSON.stringify({
-		// 						"x": 10,
-		// 						"y": 90
-		// 					})
-		// 				}, (error, response, body) => {
-		// 					if (error) throw error;
-		// 					console.log(response.body);
-		// 					request.put(penURL, {
-		// 						headers: penHeader,
-		// 						body: JSON.stringify({
-		// 							"x": 10,
-		// 							"y": 10
-		// 						})
-		// 					}, (error, response, body) => {
-		// 						if (error) throw error;
-		// 						console.log(response.body);
-		// 						this.draw('0,0', 1);
-		// 					})
-		// 				})
-		// 			})
-		// 		})
-		// 	})
-		// })
 	}
 }
 

@@ -113,7 +113,7 @@ class App {
 				request.put(penURL, {
 					headers: penHeader,
 					body: JSON.stringify({
-						"state": 1 - cloudCover/2
+						"state": 1 - cloudCover
 					})
 				}, (error, response, body) => {
 					if (error) throw error;

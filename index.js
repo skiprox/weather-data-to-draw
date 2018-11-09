@@ -43,8 +43,7 @@ class App {
 			request.put(penURL, {
 				headers: penHeader,
 				body: JSON.stringify({
-					"x": 25,
-					"y": 25
+					"state": 1
 				})
 			}, (error, response, body) => {
 				if (error) throw error;
@@ -52,7 +51,7 @@ class App {
 				request.put(penURL, {
 					headers: penHeader,
 					body: JSON.stringify({
-						"x": 75,
+						"x": 25,
 						"y": 25
 					})
 				}, (error, response, body) => {
@@ -62,7 +61,7 @@ class App {
 						headers: penHeader,
 						body: JSON.stringify({
 							"x": 75,
-							"y": 75
+							"y": 25
 						})
 					}, (error, response, body) => {
 						if (error) throw error;
@@ -70,7 +69,7 @@ class App {
 						request.put(penURL, {
 							headers: penHeader,
 							body: JSON.stringify({
-								"x": 25,
+								"x": 75,
 								"y": 75
 							})
 						}, (error, response, body) => {
@@ -79,12 +78,31 @@ class App {
 							request.put(penURL, {
 								headers: penHeader,
 								body: JSON.stringify({
-									"x": 0,
-									"y": 0
+									"x": 25,
+									"y": 75
 								})
 							}, (error, response, body) => {
 								if (error) throw error;
 								console.log(response.body);
+								request.put(penURL, {
+									headers: penHeader,
+									body: JSON.stringify({
+										"x": 0,
+										"y": 0
+									})
+								}, (error, response, body) => {
+									if (error) throw error;
+									console.log(response.body);
+									request.put(penURL, {
+										headers: penHeader,
+										body: JSON.stringify({
+											"state": 0
+										})
+									}, (error, response, body) => {
+										if (error) throw error;
+										console.log(response.body);
+									})
+								})
 							})
 						})
 					})

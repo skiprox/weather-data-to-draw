@@ -7,6 +7,7 @@ const request = require('request');
 const key = require('./key')["key"];
 const coordinates = require('./coordinates');
 const utils = require('./utils');
+const say = require('say');
 
 /**
  * Variables
@@ -43,14 +44,7 @@ class App {
 		// Set up an interval to check the weather
 		this.sendRequest = this.sendRequest.bind(this);
 		this.interval = null;
-		// this.setup();
 		this.sendRequest();
-	}
-	/**
-	 * setup [do initial setup work]
-	 */
-	setup() {
-		this.draw('0,0', 1);
 	}
 	/**
 	 * sendRequest [send a request to worldweatheronline]
@@ -58,6 +52,7 @@ class App {
 	sendRequest() {
 		if (coordinatesIncrementer == coordinates.length) {
 			console.log('~~~~~~~~~~~~~~~ WE ARE EXITING ~~~~~~~~~~~~~~~');
+			say.speak("STOP");
 			process.exit();
 		}
 		let coordinate = coordinates[coordinatesIncrementer];
@@ -88,8 +83,8 @@ class App {
 		// put this into promises
 		let xCoord = coordinate.x;
 		let yCoord = coordinate.y;
-		let percentX = utils.mapClamp(xCoord, xMin, xMax, 10, 90);
-		let percentY = utils.mapClamp(yCoord, yMin, yMax, 10, 90);
+		let percentX = utils.mapClamp(xCoord, xMin, xMax, 25, 75);
+		let percentY = utils.mapClamp(yCoord, yMin, yMax, 25, 75);
 		request.put(penURL, {
 			headers: penHeader,
 			body: JSON.stringify({

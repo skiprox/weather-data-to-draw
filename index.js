@@ -17,8 +17,6 @@ let xMin = Math.min(...xCoordinates);
 let xMax = Math.max(...xCoordinates);
 let yMin = Math.min(...yCoordinates);
 let yMax = Math.max(...yCoordinates);
-const timeInterval = 172.8;
-const timeIntervalTest = 5;
 const weatherRequestOptions = {
 	url: 'http://api.worldweatheronline.com/premium/v1/weather.ashx',
 	qs: {
@@ -47,7 +45,6 @@ class App {
 		this.interval = null;
 		// this.setup();
 		this.sendRequest();
-		this.addListeners();
 	}
 	/**
 	 * setup [do initial setup work]
@@ -56,25 +53,23 @@ class App {
 		this.draw('0,0', 1);
 	}
 	/**
-	 * addListeners [set interval listener to send requests to get weather data]
-	 */
-	addListeners() {
-		this.interval = setInterval(this.sendRequest, timeIntervalTest * 1000);
-	}
-	/**
 	 * sendRequest [send a request to worldweatheronline]
 	 */
 	sendRequest() {
+		if (coordinatesIncrementer == coordinates.length) {
+			console.log('~~~~~~~~~~~~~~~ WE ARE EXITING ~~~~~~~~~~~~~~~');
+			process.exit();
+		}
 		let coordinate = coordinates[coordinatesIncrementer];
 		weatherRequestOptions.qs["q"] = `${coordinate.x},${coordinate.y}`;
-		coordinatesIncrementer = (coordinatesIncrementer + 1) % coordinates.length;
+		coordinatesIncrementer++;
 		request(weatherRequestOptions, (error, response, body) => {
 			if (error) {
 				throw error;
 			} else {
 				let data = JSON.parse(body);
 				let currentCondition = data.data["current_condition"];
-				let cloudCover = parseFloat(currentCondition[0].cloudcover)/100;
+				let cloudCover = parseInt(currentCondition[0].cloudcover, 10);
 				this.draw(coordinate, cloudCover);
 			}
 		});
@@ -113,11 +108,16 @@ class App {
 				request.put(penURL, {
 					headers: penHeader,
 					body: JSON.stringify({
-						"state": 1 - cloudCover
+						"state": 1
 					})
 				}, (error, response, body) => {
 					if (error) throw error;
 					console.log(response.body);
+					setTimeout(() => {
+						console.log('cloud cover: ', cloudCover);
+						console.log(`we waited for ${(100 - cloudCover)/10} seconds`);
+						this.sendRequest();
+					}, (100 - cloudCover)/10 * 1000);
 				});
 			});
 		});

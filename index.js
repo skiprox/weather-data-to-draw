@@ -7,6 +7,7 @@ const request = require('request');
 const key = require('./key')["key"];
 const coordinates = require('./coordinates');
 const utils = require('./utils');
+const say = require('say');
 
 /**
  * Variables
@@ -17,8 +18,7 @@ let xMin = Math.min(...xCoordinates);
 let xMax = Math.max(...xCoordinates);
 let yMin = Math.min(...yCoordinates);
 let yMax = Math.max(...yCoordinates);
-const timeInterval = 172.8;
-const timeIntervalTest = 5;
+const timeInterval = 10;
 const weatherRequestOptions = {
 	url: 'http://api.worldweatheronline.com/premium/v1/weather.ashx',
 	qs: {
@@ -42,32 +42,20 @@ class App {
 	 * constructor [set everything up]
 	 */
 	constructor() {
-		// Set up an interval to check the weather
-		this.sendRequest = this.sendRequest.bind(this);
-		this.interval = null;
-		// this.setup();
 		this.sendRequest();
-		this.addListeners();
-	}
-	/**
-	 * setup [do initial setup work]
-	 */
-	setup() {
-		this.draw('0,0', 1);
-	}
-	/**
-	 * addListeners [set interval listener to send requests to get weather data]
-	 */
-	addListeners() {
-		this.interval = setInterval(this.sendRequest, timeIntervalTest * 1000);
 	}
 	/**
 	 * sendRequest [send a request to worldweatheronline]
 	 */
 	sendRequest() {
+		if (coordinatesIncrementer == coordinates.length) {
+			console.log('~~~~~~~~~~~~~~~ WE ARE EXITING ~~~~~~~~~~~~~~~');
+			say.speak('STOP');
+			process.exit();
+		}
 		let coordinate = coordinates[coordinatesIncrementer];
 		weatherRequestOptions.qs["q"] = `${coordinate.x},${coordinate.y}`;
-		coordinatesIncrementer = (coordinatesIncrementer + 1) % coordinates.length;
+		coordinatesIncrementer++;
 		request(weatherRequestOptions, (error, response, body) => {
 			if (error) {
 				throw error;
@@ -118,6 +106,10 @@ class App {
 				}, (error, response, body) => {
 					if (error) throw error;
 					console.log(response.body);
+					setTimeout(() => {
+						console.log('we send another request');
+						this.sendRequest();
+					}, timeInterval * 1000);
 				});
 			});
 		});

@@ -43,7 +43,8 @@ class App {
 			request.put(penURL, {
 				headers: penHeader,
 				body: JSON.stringify({
-					"state": 1
+					"x": 25,
+					"y": 25
 				})
 			}, (error, response, body) => {
 				if (error) throw error;
@@ -51,8 +52,7 @@ class App {
 				request.put(penURL, {
 					headers: penHeader,
 					body: JSON.stringify({
-						"x": 25,
-						"y": 25
+						"state": 1
 					})
 				}, (error, response, body) => {
 					if (error) throw error;
@@ -87,8 +87,8 @@ class App {
 								request.put(penURL, {
 									headers: penHeader,
 									body: JSON.stringify({
-										"x": 0,
-										"y": 0
+										"x": 25,
+										"y": 25
 									})
 								}, (error, response, body) => {
 									if (error) throw error;
@@ -101,6 +101,16 @@ class App {
 									}, (error, response, body) => {
 										if (error) throw error;
 										console.log(response.body);
+										request.put(penURL, {
+											headers: penHeader,
+											body: JSON.stringify({
+												"x": 0,
+												"y": 0
+											})
+										}, (error, response, body) => {
+											if (error) throw error;
+											console.log(response.body);
+										})
 									})
 								})
 							})

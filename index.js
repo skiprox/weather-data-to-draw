@@ -81,8 +81,8 @@ class App {
 		// put this into promises
 		let xCoord = coordinate.x;
 		let yCoord = coordinate.y;
-		let percentX = utils.mapClamp(xCoord, xMin, xMax, 10, 90);
-		let percentY = utils.mapClamp(yCoord, yMin, yMax, 10, 90);
+		let percentX = utils.mapClamp(xCoord, xMin, xMax, 25, 75);
+		let percentY = utils.mapClamp(yCoord, yMin, yMax, 25, 75);
 		request.put(penURL, {
 			headers: penHeader,
 			body: JSON.stringify({

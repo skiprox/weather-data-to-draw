@@ -5,7 +5,7 @@
  */
 const request = require('request');
 const key = require('./key')["key"];
-const coordinates = require('./coordinates');
+let coordinates = require('./coordinates');
 const utils = require('./utils');
 const say = require('say');
 
@@ -42,9 +42,27 @@ class App {
 	 */
 	constructor() {
 		// Set up an interval to check the weather
-		this.sendRequest = this.sendRequest.bind(this);
-		this.interval = null;
+		coordinates = this.shuffleArray(coordinates);
 		this.sendRequest();
+	}
+	/**
+	 * shuffleArray [shuffle the coordinates array]
+	 * @param  {array} array [the array to shuffle]
+	 * @return {array}       [the returned, shuffled array]
+	 */
+	shuffleArray(array) {
+		var currentIndex = array.length, temporaryValue, randomIndex;
+		// While there remain elements to shuffle...
+		while (0 !== currentIndex) {
+			// Pick a remaining element...
+			randomIndex = Math.floor(Math.random() * currentIndex);
+			currentIndex -= 1;
+			// And swap it with the current element.
+			temporaryValue = array[currentIndex];
+			array[currentIndex] = array[randomIndex];
+			array[randomIndex] = temporaryValue;
+		}
+		return array;
 	}
 	/**
 	 * sendRequest [send a request to worldweatheronline]

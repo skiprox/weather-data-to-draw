@@ -11,6 +11,10 @@ const utils = require('./utils');
 /**
  * Variables
  */
+let minPercentX = 25;
+let minPercentY = 25;
+let maxPercentX = 75;
+let maxPercentY = 75;
 const penURL = 'http://localhost:4242/v1/pen';
 const penHeader = {
 	'Content-Type': 'application/json; charset=UTF-8'
@@ -43,8 +47,8 @@ class App {
 			request.put(penURL, {
 				headers: penHeader,
 				body: JSON.stringify({
-					"x": 25,
-					"y": 25
+					"x": minPercentX,
+					"y": minPercentY
 				})
 			}, (error, response, body) => {
 				if (error) throw error;
@@ -60,8 +64,8 @@ class App {
 					request.put(penURL, {
 						headers: penHeader,
 						body: JSON.stringify({
-							"x": 75,
-							"y": 25
+							"x": maxPercentX,
+							"y": minPercentY
 						})
 					}, (error, response, body) => {
 						if (error) throw error;
@@ -69,8 +73,8 @@ class App {
 						request.put(penURL, {
 							headers: penHeader,
 							body: JSON.stringify({
-								"x": 75,
-								"y": 75
+								"x": maxPercentX,
+								"y": maxPercentY
 							})
 						}, (error, response, body) => {
 							if (error) throw error;
@@ -78,8 +82,8 @@ class App {
 							request.put(penURL, {
 								headers: penHeader,
 								body: JSON.stringify({
-									"x": 25,
-									"y": 75
+									"x": minPercentX,
+									"y": maxPercentY
 								})
 							}, (error, response, body) => {
 								if (error) throw error;
@@ -87,8 +91,8 @@ class App {
 								request.put(penURL, {
 									headers: penHeader,
 									body: JSON.stringify({
-										"x": 25,
-										"y": 25
+										"x": minPercentX,
+										"y": minPercentY
 									})
 								}, (error, response, body) => {
 									if (error) throw error;

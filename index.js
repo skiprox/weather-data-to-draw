@@ -11,10 +11,10 @@ const utils = require('./utils');
 /**
  * Variables
  */
-let minPercentX = 25;
-let minPercentY = 25;
-let maxPercentX = 75;
-let maxPercentY = 75;
+let minPercentX = 3;
+let minPercentY = 6;
+let maxPercentX = 79;
+let maxPercentY = 88;
 const penURL = 'http://localhost:4242/v1/pen';
 const penHeader = {
 	'Content-Type': 'application/json; charset=UTF-8'

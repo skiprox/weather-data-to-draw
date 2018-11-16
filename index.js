@@ -12,10 +12,10 @@ const say = require('say');
 /**
  * Variables
  */
-let minPercentX = 25;
-let maxPercentX = 75;
-let minPercentY = 25;
-let maxPercentY = 75;
+let minPercentX = 3;
+let minPercentY = 6;
+let maxPercentX = 79;
+let maxPercentY = 88;
 let xMin, xMax, yMin, yMax;
 const weatherRequestOptions = {
 	url: 'http://api.worldweatheronline.com/premium/v1/weather.ashx',

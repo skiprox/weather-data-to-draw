@@ -12,12 +12,11 @@ const say = require('say');
 /**
  * Variables
  */
-let xCoordinates = coordinates.map(coord => coord.x);
-let yCoordinates = coordinates.map(coord => coord.y);
-let xMin = Math.min(...xCoordinates);
-let xMax = Math.max(...xCoordinates);
-let yMin = Math.min(...yCoordinates);
-let yMax = Math.max(...yCoordinates);
+let minPercentX = 25;
+let minPercentY = 25;
+let maxPercentX = 75;
+let maxPercentY = 75;
+let xMin, xMax, yMin, yMax;
 const timeInterval = 10;
 const weatherRequestOptions = {
 	url: 'http://api.worldweatheronline.com/premium/v1/weather.ashx',
@@ -42,8 +41,23 @@ class App {
 	 * constructor [set everything up]
 	 */
 	constructor() {
-		coordinates = this.shuffleArray(coordinates);
+		this.setupCoordinates();
+		console.log('the coordinates', coordinates);
+		console.log('the min, max', xMin, xMax, yMin, yMax);
 		this.sendRequest();
+	}
+	/**
+	 * setupCoordinates [set up the randomized coordinates]
+	 */
+	setupCoordinates() {
+		coordinates = this.shuffleArray(coordinates);
+		coordinates = coordinates.slice(0, 11);
+		let xCoordinates = coordinates.map(coord => coord.x);
+		let yCoordinates = coordinates.map(coord => coord.y);
+		xMin = Math.min(...xCoordinates);
+		xMax = Math.max(...xCoordinates);
+		yMin = Math.min(...yCoordinates);
+		yMax = Math.max(...yCoordinates);
 	}
 	/**
 	 * shuffleArray [Shuffle the coordinates array]
@@ -102,8 +116,8 @@ class App {
 		// put this into promises
 		let xCoord = coordinate.x;
 		let yCoord = coordinate.y;
-		let percentX = utils.mapClamp(xCoord, xMin, xMax, 25, 75);
-		let percentY = utils.mapClamp(yCoord, yMin, yMax, 25, 75);
+		let percentX = utils.mapClamp(xCoord, xMin, xMax, minPercentX, maxPercentX);
+		let percentY = utils.mapClamp(yCoord, yMin, yMax, minPercentY, maxPercentY);
 		request.put(penURL, {
 			headers: penHeader,
 			body: JSON.stringify({

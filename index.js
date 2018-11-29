@@ -34,6 +34,7 @@ const penHeader = {
 };
 let coordinatesIncrementer = 0;
 let led;
+let anode;
 
 /**
  * APP
@@ -48,8 +49,16 @@ class App {
 		console.log('the coordinates', coordinates);
 		console.log('the min, max', xMin, xMax, yMin, yMax);
 		board.on("ready", () => {
-			led = new five.Led(13);
-			led.off();
+			anode = new five.Led.RGB({
+				pins: {
+					red: 6,
+					green: 5,
+					blue: 3
+				},
+				isAnode: true
+			});
+			anode.color("#FFFFFF");
+			anode.intensity(0);
 			this.sendRequest();
 		});
 	}
@@ -92,7 +101,7 @@ class App {
 	sendRequest() {
 		if (coordinatesIncrementer == coordinates.length) {
 			console.log('~~~~~~~~~~~~~~~ WE ARE EXITING ~~~~~~~~~~~~~~~');
-			led.off();
+			anode.intensity(0);
 			say.speak('STOP');
 			process.exit();
 		}
@@ -149,10 +158,10 @@ class App {
 				}, (error, response, body) => {
 					if (error) throw error;
 					console.log(response.body);
-					led.on();
+					anode.intensity(100 - (cloudCover * 100));
 					setTimeout(() => {
 						console.log('we send another request');
-						led.off();
+						anode.intensity(0);
 						this.sendRequest();
 					}, timeInterval * 1000);
 				});

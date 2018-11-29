@@ -57,6 +57,7 @@ class App {
 				},
 				isAnode: true
 			});
+			anode.intensity(0);
 			anode.color("#FFFFFF");
 			anode.intensity(0);
 			this.sendRequest();
@@ -150,21 +151,13 @@ class App {
 				})
 			}, (error, response, body) => {
 				if (error) throw error;
-				request.put(penURL, {
-					headers: penHeader,
-					body: JSON.stringify({
-						"state": 1 - cloudCover
-					})
-				}, (error, response, body) => {
-					if (error) throw error;
-					console.log(response.body);
-					anode.intensity(100 - (cloudCover * 100));
-					setTimeout(() => {
-						console.log('we send another request');
-						anode.intensity(0);
-						this.sendRequest();
-					}, timeInterval * 1000);
-				});
+				console.log(response.body);
+				anode.intensity(100 - (cloudCover * 100));
+				setTimeout(() => {
+					console.log('we send another request');
+					anode.intensity(0);
+					this.sendRequest();
+				}, timeInterval * 1000);
 			});
 		});
 	}

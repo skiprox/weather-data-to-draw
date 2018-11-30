@@ -68,7 +68,7 @@ class App {
 	 */
 	setupCoordinates() {
 		coordinates = this.shuffleArray(coordinates);
-		coordinates = coordinates.slice(0, 11);
+		coordinates = coordinates.slice(0, 12);
 		let xCoordinates = coordinates.map(coord => coord.x);
 		let yCoordinates = coordinates.map(coord => coord.y);
 		xMin = Math.min(...xCoordinates);
@@ -151,7 +151,8 @@ class App {
 				})
 			}, (error, response, body) => {
 				if (error) throw error;
-				console.log(response.body);
+				console.log(`Cloud Coverage: ${cloudCover}`);
+				console.log(`Response: ${response.body}`);
 				anode.intensity(100 - (cloudCover * 100));
 				setTimeout(() => {
 					console.log('we send another request');

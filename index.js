@@ -1,6 +1,11 @@
 'use strict';
 
 /**
+ * CHANGE THESE IF YOU WANT
+ */
+const timeInterval = 5;
+
+/**
  * Requires
  */
 const request = require('request');
@@ -19,7 +24,6 @@ let minPercentY = 6;
 let maxPercentX = 79;
 let maxPercentY = 88;
 let xMin, xMax, yMin, yMax;
-const timeInterval = 10;
 const weatherRequestOptions = {
 	url: 'http://api.worldweatheronline.com/premium/v1/weather.ashx',
 	qs: {
@@ -71,7 +75,7 @@ class App {
 	 */
 	setupCoordinates() {
 		coordinates = this.shuffleArray(coordinates);
-		coordinates = coordinates.slice(0, 3);
+		coordinates = coordinates.slice(0, 12);
 		let xCoordinates = coordinates.map(coord => coord.x);
 		let yCoordinates = coordinates.map(coord => coord.y);
 		xMin = Math.min(...xCoordinates);
@@ -105,11 +109,13 @@ class App {
 	sendRequest() {
 		if (coordinatesIncrementer == coordinates.length) {
 			console.log('~~~~~~~~~~~~~~~ WE ARE EXITING ~~~~~~~~~~~~~~~');
-			anode.intensity(1);
+			anode.intensity(0);
 			anode.color("#000000");
-			anode.intensity(1);
+			anode.intensity(0);
 			say.speak('STOP');
-			process.exit();
+			setTimeout(() => {
+				process.exit();
+			}, 100);
 		} else {
 			let coordinate = coordinates[coordinatesIncrementer];
 			weatherRequestOptions.qs["q"] = `${coordinate.x},${coordinate.y}`;
@@ -142,15 +148,14 @@ class App {
 		let yCoord = coordinate.y;
 		let percentX = utils.mapClamp(xCoord, xMin, xMax, minPercentX, maxPercentX);
 		let percentY = utils.mapClamp(yCoord, yMin, yMax, minPercentY, maxPercentY);
-		let distance = Math.sqrt(Math.pow(percentXOld - percentX, 2) + Math.pow(percentYOld - percentY, 2));
-		let distanceSquished = Math.floor(distance/2);
+		let distance = Math.sqrt(Math.pow(percentXOld - percentX, 2) + Math.pow(percentYOld - percentY, 2))/1.5;
 		console.log(`DISTANCE: ${distance}`);
 		let intervalIncrementer = 0;
 		let interval = setInterval(() => {
-			let newCoverage = utils.mapClamp(intervalIncrementer, 0, distanceSquished, previousCoverage, 100 - (cloudCover*100));
+			let newCoverage = utils.mapClamp(intervalIncrementer, 0, distance, previousCoverage, 100 - (cloudCover*100));
 			anode.intensity(newCoverage);
 			intervalIncrementer ++;
-			if (intervalIncrementer >= distanceSquished) {
+			if (intervalIncrementer >= distance) {
 				clearInterval(interval);
 			}
 		}, 100);

@@ -35,6 +35,9 @@ const penHeader = {
 let coordinatesIncrementer = 0;
 let led;
 let anode;
+let previousCoverage = 0;
+let percentXOld = 0;
+let percentYOld = 0;
 
 /**
  * APP
@@ -68,7 +71,7 @@ class App {
 	 */
 	setupCoordinates() {
 		coordinates = this.shuffleArray(coordinates);
-		coordinates = coordinates.slice(0, 12);
+		coordinates = coordinates.slice(0, 3);
 		let xCoordinates = coordinates.map(coord => coord.x);
 		let yCoordinates = coordinates.map(coord => coord.y);
 		xMin = Math.min(...xCoordinates);
@@ -102,23 +105,26 @@ class App {
 	sendRequest() {
 		if (coordinatesIncrementer == coordinates.length) {
 			console.log('~~~~~~~~~~~~~~~ WE ARE EXITING ~~~~~~~~~~~~~~~');
-			anode.intensity(0);
+			anode.intensity(1);
+			anode.color("#000000");
+			anode.intensity(1);
 			say.speak('STOP');
 			process.exit();
+		} else {
+			let coordinate = coordinates[coordinatesIncrementer];
+			weatherRequestOptions.qs["q"] = `${coordinate.x},${coordinate.y}`;
+			coordinatesIncrementer++;
+			request(weatherRequestOptions, (error, response, body) => {
+				if (error) {
+					throw error;
+				} else {
+					let data = JSON.parse(body);
+					let currentCondition = data.data["current_condition"];
+					let cloudCover = parseFloat(currentCondition[0].cloudcover)/100;
+					this.draw(coordinate, cloudCover);
+				}
+			});
 		}
-		let coordinate = coordinates[coordinatesIncrementer];
-		weatherRequestOptions.qs["q"] = `${coordinate.x},${coordinate.y}`;
-		coordinatesIncrementer++;
-		request(weatherRequestOptions, (error, response, body) => {
-			if (error) {
-				throw error;
-			} else {
-				let data = JSON.parse(body);
-				let currentCondition = data.data["current_condition"];
-				let cloudCover = parseFloat(currentCondition[0].cloudcover)/100;
-				this.draw(coordinate, cloudCover);
-			}
-		});
 	}
 	/**
 	 * draw [draw on the axidraw]
@@ -136,6 +142,18 @@ class App {
 		let yCoord = coordinate.y;
 		let percentX = utils.mapClamp(xCoord, xMin, xMax, minPercentX, maxPercentX);
 		let percentY = utils.mapClamp(yCoord, yMin, yMax, minPercentY, maxPercentY);
+		let distance = Math.sqrt(Math.pow(percentXOld - percentX, 2) + Math.pow(percentYOld - percentY, 2));
+		let distanceSquished = Math.floor(distance/2);
+		console.log(`DISTANCE: ${distance}`);
+		let intervalIncrementer = 0;
+		let interval = setInterval(() => {
+			let newCoverage = utils.mapClamp(intervalIncrementer, 0, distanceSquished, previousCoverage, 100 - (cloudCover*100));
+			anode.intensity(newCoverage);
+			intervalIncrementer ++;
+			if (intervalIncrementer >= distanceSquished) {
+				clearInterval(interval);
+			}
+		}, 100);
 		request.put(penURL, {
 			headers: penHeader,
 			body: JSON.stringify({
@@ -153,10 +171,13 @@ class App {
 				if (error) throw error;
 				console.log(`Cloud Coverage: ${cloudCover}`);
 				console.log(`Response: ${response.body}`);
-				anode.intensity(100 - (cloudCover * 100));
+				//anode.intensity(100 - (cloudCover * 100));
 				setTimeout(() => {
 					console.log('we send another request');
-					anode.intensity(0);
+					//anode.intensity(0);
+					previousCoverage = 100 - (cloudCover * 100);
+					percentXOld = percentX;
+					percentYOld = percentY;
 					this.sendRequest();
 				}, timeInterval * 1000);
 			});

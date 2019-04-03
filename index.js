@@ -96,9 +96,13 @@ class App {
 				throw error;
 			} else {
 				let data = JSON.parse(body);
-				let currentCondition = data.data["current_condition"];
-				let cloudCover = parseFloat(currentCondition[0].cloudcover)/100;
-				this.draw(coordinate, cloudCover);
+				if (data.data.error) {
+					throw data.data.error[0].msg;
+				} else {
+					let currentCondition = data.data["current_condition"];
+					let cloudCover = parseFloat(currentCondition[0].cloudcover)/100;
+					this.draw(coordinate, cloudCover);
+				}
 			}
 		});
 	}

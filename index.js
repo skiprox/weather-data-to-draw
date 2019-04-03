@@ -104,7 +104,7 @@ class App {
 	}
 	/**
 	 * draw [draw on the axidraw]
-	 * @param  {String} coordinate [lat&lng coordinates in the form of e.g. '13.42,9.58']
+	 * @param  {Obj} coordinate [lat&lng coordinates in the form of e.g. {x: 1.2, y: 2.1}]
 	 * @param  {Float} cloudCover [cloud cover, from 0 to 1 (drawn as 1 - cloudCover)]
 	 *
 	 * What we do here is send a request to localhost to reset the state of the pen

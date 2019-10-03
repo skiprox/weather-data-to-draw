@@ -65,7 +65,7 @@ class App {
 				isAnode: true
 			});
 			anode.intensity(0);
-			anode.color("#FFFFFF");
+			anode.color('#FFFFFF');
 			anode.intensity(0);
 			this.sendRequest();
 		});
@@ -107,6 +107,7 @@ class App {
 	 * sendRequest [send a request to worldweatheronline]
 	 */
 	sendRequest() {
+		console.log('we send request');
 		if (coordinatesIncrementer == coordinates.length) {
 			console.log('~~~~~~~~~~~~~~~ WE ARE EXITING ~~~~~~~~~~~~~~~');
 			anode.intensity(0);
@@ -121,6 +122,7 @@ class App {
 			weatherRequestOptions.qs["q"] = `${coordinate.x},${coordinate.y}`;
 			coordinatesIncrementer++;
 			request(weatherRequestOptions, (error, response, body) => {
+				console.log('we send request actually');
 				if (error) {
 					throw error;
 				} else {
